@@ -319,33 +319,6 @@ actions:
 
   # Query
 
-  - name: findByProject
-    class: query
-    method: GET
-    path: "/projects/%s/tasks"
-    params:
-      - name: projectId
-        <<: *Param.ProjectId
-        required: true
-        comment: The project in which to search for tasks.
-    collection: true
-    comment: |
-      Returns the compact task records for all tasks within the given project,
-      ordered by their priority within the project.
-
-  - name: findByTag
-    class: query
-    method: GET
-    path: "/tags/%s/tasks"
-    params:
-      - name: tag
-        <<: *Param.TagId
-        required: true
-        comment: The tag in which to search for tasks.
-    collection: true
-    comment: |
-      Returns the compact task records for all tasks with the given tag.
-
   - name: findAll
     class: query
     method: GET
@@ -384,6 +357,91 @@ actions:
             just because another object it is associated with (e.g. a subtask)
             is modified. Actions that count as modifying the task include
             assigning, renaming, completing, and adding stories.
+
+  - name: findByProject
+    class: query
+    method: GET
+    path: "/projects/%s/tasks"
+    params:
+      - name: projectId
+        <<: *Param.ProjectId
+        required: true
+        comment: The project in which to search for tasks.
+      - name: assignee
+        <<: *Param.User
+        comment: The assignee to filter tasks on.
+        notes:
+          - |
+            If you specify `assignee`, you must also specify the `workspace` to filter on.
+      - name: workspace
+        <<: *Param.WorkspaceId
+        comment: The workspace or organization to filter tasks on.
+        notes:
+          - |
+            If you specify `workspace`, you must also specify the `assignee` to filter on.
+      - name: completed_since
+        <<: *Param.DateTime
+        comment: |
+          Only return tasks that are either incomplete or that have been
+          completed since this time.
+      - name: modified_since
+        <<: *Param.DateTime
+        comment: |
+          Only return tasks that have been modified since the given time.
+        notes:
+          - |
+            A task is considered "modified" if any of its properties change,
+            or associations between it and other objects are modified (e.g.
+            a task being added to a project). A task is not considered modified
+            just because another object it is associated with (e.g. a subtask)
+            is modified. Actions that count as modifying the task include
+            assigning, renaming, completing, and adding stories.
+    collection: true
+    comment: |
+      Returns the compact task records for all tasks within the given project,
+      ordered by their priority within the project.
+
+  - name: findByTag
+    class: query
+    method: GET
+    path: "/tags/%s/tasks"
+    params:
+      - name: tag
+        <<: *Param.TagId
+        required: true
+        comment: The tag in which to search for tasks.
+      - name: assignee
+        <<: *Param.User
+        comment: The assignee to filter tasks on.
+        notes:
+          - |
+            If you specify `assignee`, you must also specify the `workspace` to filter on.
+      - name: workspace
+        <<: *Param.WorkspaceId
+        comment: The workspace or organization to filter tasks on.
+        notes:
+          - |
+            If you specify `workspace`, you must also specify the `assignee` to filter on.
+      - name: completed_since
+        <<: *Param.DateTime
+        comment: |
+          Only return tasks that are either incomplete or that have been
+          completed since this time.
+      - name: modified_since
+        <<: *Param.DateTime
+        comment: |
+          Only return tasks that have been modified since the given time.
+        notes:
+          - |
+            A task is considered "modified" if any of its properties change,
+            or associations between it and other objects are modified (e.g.
+            a task being added to a project). A task is not considered modified
+            just because another object it is associated with (e.g. a subtask)
+            is modified. Actions that count as modifying the task include
+            assigning, renaming, completing, and adding stories.
+    collection: true
+    comment: |
+      Returns the compact task records for all tasks with the given tag.
 
   # Followers
 
